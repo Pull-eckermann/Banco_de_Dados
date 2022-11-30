@@ -1,0 +1,3 @@
+select C_MKTSEGMENT, COUNT(*)
+from CUSTOMER
+group by C_MKTSEGMENT;

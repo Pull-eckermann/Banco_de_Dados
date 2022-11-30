@@ -1,0 +1,1 @@
+select DISTINCT p_type from PART;
