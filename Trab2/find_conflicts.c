@@ -15,9 +15,10 @@ int main(int argc, char *argv[]){
     op->operation = (char) line[4]; //Operação
     op->atributo = (char) line[6]; //Atributo
     op->prox = NULL;
-  
+
     if(listOp != NULL){
       operacao *aux;
+      //Tramites para conseguir adicionar operação no final da lista
       for(operacao *x = listOp; x != NULL; x = x->prox)
         if(x->prox == NULL)
           aux = x;
@@ -26,11 +27,14 @@ int main(int argc, char *argv[]){
       listOp = op;
   }
 
+  //Cria o grafo de acordo com as operações
   listaNodoT *grafo = NULL;
-  for(operacao *x; x != NULL; x=x->prox){
-    
+  for(operacao *x = listOp; x != NULL; x=x->prox){
+    if(buscaNodoGrafo(grafo, x->n_transaction) == NULL){ //Retorna nulo se não encontra o nodo
+      nodoT *novoNodo = initNodo(x->n_transaction); //Como não existe o nodo ainda, cria pela primeira vez
+      addNodoGrafo(&grafo, novoNodo); // Adiciona novo nodo no grafo
+    }
   }
-
 
   return 0;
 }

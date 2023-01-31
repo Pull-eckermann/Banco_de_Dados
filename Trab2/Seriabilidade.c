@@ -9,12 +9,12 @@ void criaAresta(nodoT* i, nodoT* j){
 }
 
 //Adiciona um nodo à lista de nodos que representa um grafo
-void addNodoGrafo(listaNodoT *grafo, nodoT *nodo){
-  if((nodo != NULL) && (grafo != NULL)){
+void addNodoGrafo(listaNodoT **grafo, nodoT *nodo){
+  if(nodo != NULL){
     listaNodoT *novoNodo = malloc(sizeof(listaNodoT));
     novoNodo->transaction = nodo;
-    novoNodo->prox = grafo;
-    grafo = novoNodo;
+    novoNodo->prox = *grafo;
+    *grafo = novoNodo;
   }
 }
 

@@ -1,5 +1,5 @@
 all: find_conflicts.o Seriabilidade.o
-	gcc -o teste find_conflicts.o Seriabilidade.o
+	gcc -o find_conflicts find_conflicts.o Seriabilidade.o
 
 find_conflicts.o: find_conflicts.c Seriabilidade.h
 	gcc -o find_conflicts.o find_conflicts.c -c -Wall
@@ -9,3 +9,4 @@ Seriabilidade.o: Seriabilidade.c Seriabilidade.h
 
 clean:
 	rm *.o
+	rm find_conflicts

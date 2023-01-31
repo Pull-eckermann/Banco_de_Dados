@@ -1,5 +1,6 @@
 #ifndef SERIABILIDADE_H
 #define SERIABILIDADE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,7 +26,7 @@ typedef struct operacao{
 }operacao;
 /*------------------------------------------------------------*/
 void criaAresta(nodoT* i, nodoT* j);
-void addNodoGrafo(listaNodoT *grafo, nodoT *nodo);
+void addNodoGrafo(listaNodoT **grafo, nodoT *nodo);
 nodoT *buscaNodoGrafo(listaNodoT *grafo, unsigned int n);
 nodoT *initNodo(unsigned int n_transaction);
 
