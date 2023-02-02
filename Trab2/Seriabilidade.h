@@ -30,4 +30,6 @@ void addNodoGrafo(listaNodoT **grafo, nodoT *nodo);
 nodoT *buscaNodoGrafo(listaNodoT *grafo, unsigned int n);
 nodoT *initNodo(unsigned int n_transaction);
 
+
+
 #endif // SERIABILIDADE_H
