@@ -29,7 +29,8 @@ void criaAresta(nodoT* i, nodoT* j);
 void addNodoGrafo(listaNodoT **grafo, nodoT *nodo);
 nodoT *buscaNodoGrafo(listaNodoT *grafo, unsigned int n);
 nodoT *initNodo(unsigned int n_transaction);
-
-
+void criaGrafo(listaNodoT **grafo, operacao *listOp);
+int buscaCicloGrafo(listaNodoT *grafo);
+int DFSNodo(nodoT *t);
 
 #endif // SERIABILIDADE_H

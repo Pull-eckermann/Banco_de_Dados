@@ -9,7 +9,7 @@ int main(int argc, char *argv[]){
   char line[10];
 
   // Faz a leitura dos arquivos de entrada, linha por linha
-  //armazenando numa lista de operações
+  //armazenando numa lista de operações ordenada pelo timestamp
   while(scanf("%99[^\n]%*c", line) == 1){
     operacao *op = malloc(sizeof(operacao));
     op->timestamp = (unsigned int) line[0]; //Timestamp
@@ -29,13 +29,8 @@ int main(int argc, char *argv[]){
       listOp = op;
   }
 
-  //Cria o grafo de acordo com as operações
-  for(operacao *x = listOp; x != NULL; x=x->prox){
-    if(buscaNodoGrafo(grafo, x->n_transaction) == NULL){ //Retorna nulo se não encontra o nodo
-      nodoT *novoNodo = initNodo(x->n_transaction); //Como não existe o nodo ainda, cria pela primeira vez
-      addNodoGrafo(&grafo, novoNodo); // Adiciona novo nodo no grafo
-    }
-  }
+  //Cria o grafo de acordo com a lista de operações
+  criaGrafo(&grafo, listOp);
 
   //Adiciona as arestas de acordo com o algoritmo do teste de seriabilidade
   for(operacao *opi = listOp; opi != NULL; opi = opi->prox){
@@ -59,6 +54,9 @@ int main(int argc, char *argv[]){
     }
   }
 
+  int temCiclo = buscaCicloGrafo(grafo);
+
+  printf("temCiclo = %d\n", temCiclo);
   for(listaNodoT *x = grafo; x!=NULL; x=x->prox){
     printf("Transacao: %c\n", x->transaction->n_transacao);
     printf("Arestas\n");
