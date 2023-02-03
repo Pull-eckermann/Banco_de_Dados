@@ -49,8 +49,8 @@ void criaGrafo(listaNodoT **grafo, operacao *listOp){
 
 //Algoritmo para busca de ciclo em grafo baseado no seguinte endereço:
 //https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/cycles-and-dags.html#sec:on-the-fly
-static int cnt, pre[1000];
-static int cntt, post[1000];
+static int cnt, pre[MAX_T];
+static int cntt, post[MAX_T];
 
 int buscaCicloGrafo(listaNodoT *grafo){
   cnt = cntt = 0;
@@ -77,5 +77,48 @@ int DFSNodo(nodoT *t){
   }
   post[t->n_transacao] = cntt++;
   return 0; //Não encontrou ciclo
+}
+
+//Confere se o escalonamento está commitado
+int isCommited(operacao *listOp, int commits[MAX_T]){
+  if(listOp != NULL){
+    for(operacao *op = listOp; op != NULL; op = op->prox){
+      if(commits[op->n_transaction] == -1) //Se qualquer um deles estiver em -1 quer dizer que não commitou ainda
+        return 0;
+    }
+    return 1; //Todas as transações estão marcadas como commit
+  }
+  return 0;
+}
+
+//Funções para liberação de espaço
+void freeOpList(operacao **listOp){
+  operacao *op = *listOp;
+  *listOp = NULL;
+
+  while(op != NULL){
+    operacao *aux = op;
+    op = op->prox;
+    free(aux);
+  }
+}
+
+void freeGrafo(listaNodoT **grafo){
+  listaNodoT * g = *grafo;
+  *grafo = NULL;
+
+  while(g != NULL){
+    listaNodoT *aux = g;
+    g = g->prox;
+
+    nodoT *t = aux->transaction;
+    listaNodoT *aux2 = t->arestas;
+    while(aux2 != NULL){
+      listaNodoT *aux3 = aux2;
+      aux2 = aux2->prox;
+      free(aux3);
+    }
+    free(aux);
+  }
 }
 

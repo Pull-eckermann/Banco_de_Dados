@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_T 1000
+
 //Uma lista encadead simples de nodosT
 typedef struct listaNodoT{
   struct nodoT *transaction;
@@ -32,5 +34,8 @@ nodoT *initNodo(unsigned int n_transaction);
 void criaGrafo(listaNodoT **grafo, operacao *listOp);
 int buscaCicloGrafo(listaNodoT *grafo);
 int DFSNodo(nodoT *t);
+int isCommited(operacao *op, int commits[MAX_T]);
+void freeOpList(operacao **listOp);
+void freeGrafo(listaNodoT **grafo);
 
 #endif // SERIABILIDADE_H
