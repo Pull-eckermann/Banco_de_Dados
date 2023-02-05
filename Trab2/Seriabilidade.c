@@ -79,30 +79,14 @@ int DFSNodo(nodoT *t){
   return 0; //Não encontrou ciclo
 }
 
-//Confere se o escalonamento está commitado
-int isCommited(operacao *listOp, int commits[MAX_T]){
-  if(listOp != NULL){
-    for(operacao *op = listOp; op != NULL; op = op->prox){
-      if(commits[op->n_transaction] == -1) //Se qualquer um deles estiver em -1 quer dizer que não commitou ainda
-        return 0;
-    }
-    return 1; //Todas as transações estão marcadas como commit
-  }
-  return 0;
+int tamGrafo(listaNodoT *grafo){
+  int tam = 0;
+  for(listaNodoT *g = grafo; g != NULL; g = g->prox)
+    tam++;
+  return tam;
 }
 
-//Funções para liberação de espaço
-void freeOpList(operacao **listOp){
-  operacao *op = *listOp;
-  *listOp = NULL;
-
-  while(op != NULL){
-    operacao *aux = op;
-    op = op->prox;
-    free(aux);
-  }
-}
-
+//Libera todos os nodos do grafo
 void freeGrafo(listaNodoT **grafo){
   listaNodoT * g = *grafo;
   *grafo = NULL;

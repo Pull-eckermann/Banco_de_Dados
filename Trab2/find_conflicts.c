@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Seriabilidade.h"
+#include "VisaoEquivalente.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]){
   operacao *listOp = NULL;
@@ -8,7 +10,7 @@ int main(int argc, char *argv[]){
   int commits[MAX_T]; //Vetor que confere comitações
   for(int i = 0; i < MAX_T; i++) commits[i] = -1; //Iniciliza com -1
   char line[100];
-  unsigned int escalonamento = 0; //Identificador do escalonamento
+  int escalonamento = 0; //Identificador do escalonamento
 
   // Faz a leitura dos arquivos de entrada, linha por linha
   //armazenando numa lista de operações ordenada pelo timestamp
@@ -20,16 +22,7 @@ int main(int argc, char *argv[]){
       op->operation = (char) line[4]; //Operação
       op->atributo = (char) line[6]; //Atributo
       op->prox = NULL;
-
-      if(listOp != NULL){
-        operacao *aux;
-        //Tramites para conseguir adicionar operação no final da lista
-        for(operacao *x = listOp; x != NULL; x = x->prox)
-          if(x->prox == NULL)
-            aux = x;
-        aux->prox = op;
-      }else
-        listOp = op;
+      addOp(&listOp, op);
     }else{
       commits[(int) line[2]] = 1;
       if(isCommited(listOp, commits)){
@@ -59,12 +52,30 @@ int main(int argc, char *argv[]){
             }
           }
         }
-
+        //temCiclo será 1 se existir ciclo no grafo
         int temCiclo = buscaCicloGrafo(grafo);
         /*===========================Algoritmo de visão equivalente===========================*/
+        int tam = tamGrafo(grafo);
+        unsigned int *trans = malloc(sizeof(unsigned int) * tam);
+        int index = tam - 1;
+        for(listaNodoT *g = grafo; g != NULL; g = g->prox){
+          trans[index] = g->transaction->n_transacao;
+          index--;
+        }
+        //equivalente será 1 se existe visão equivalente em listOp
+        int equivalente = visaoEquivalente(trans, tam, listOp);
 
-
-
+        //Imprime o resultado do escalonamento
+        printf("%d ", escalonamento);
+        printf("%c,%c ", trans[0], trans[tam -1]);
+        if(temCiclo == 1)
+          printf("NS ");
+        else
+          printf("SS ");
+        if(equivalente == 1)
+          printf("SV\n");
+        else
+          printf("NV\n");
 
         //Libera tudo para novo escalonamento
         for(int i = 0; i < MAX_T; i++) commits[i] = -1; //Reseta os commits para novo escalonamento
