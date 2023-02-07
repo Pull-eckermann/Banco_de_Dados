@@ -27,6 +27,11 @@ typedef struct operacao{
   struct operacao *prox;
 }operacao;
 
+typedef struct par_rw{
+  struct operacao *tr;
+  struct operacao *tw;
+}par_rw;
+
 /*------------------------------------------------------------*/
 int isCommited(operacao *op, int commits[MAX_T]);
 void freeOpList(operacao **listOp);

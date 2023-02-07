@@ -28,7 +28,7 @@ void permute(unsigned int *arr, int l, int r, operacao *listOp, int *result){
       *result = 1;
     freeOpList(&listAux);
   }
-  else{
+  else if(*result != 1){
     for (int i = l; i <= r; i++){
       swap(&arr[l], &arr[i]);
       permute(arr, l + 1, r, listOp, result);
@@ -46,7 +46,7 @@ void swap(unsigned int *a, unsigned int *b){
 
 //Testa a equivalência entre duas lista de operações
 int testaEquivalencia(operacao *listOp, operacao *listAux){
-  return 0;
+  
 }
 
 

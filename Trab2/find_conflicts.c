@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Seriabilidade.h"
 #include "VisaoEquivalente.h"
 #include "utils.h"
@@ -15,16 +16,20 @@ int main(int argc, char *argv[]){
   // Faz a leitura dos arquivos de entrada, linha por linha
   //armazenando numa lista de operações ordenada pelo timestamp
   while(scanf("%99[^\n]%*c", line) == 1){
-    if(line[4] != 'C'){ //Não é um commit então adiciona na lista de op
+    unsigned int timestamp = (unsigned int) atoi(strtok(line, " "));
+    unsigned int n_transaction = (unsigned int) atoi(strtok(NULL, " "));
+    char *operation = strtok(NULL, " ");
+    char *atributo = strtok(NULL, " ");
+    if(*operation != 'C'){ //Não é um commit então adiciona na lista de op
       operacao *op = malloc(sizeof(operacao));
-      op->timestamp = (unsigned int) line[0]; //Timestamp
-      op->n_transaction = (unsigned int) line[2]; //Número da transação
-      op->operation = (char) line[4]; //Operação
-      op->atributo = (char) line[6]; //Atributo
+      op->timestamp = timestamp;
+      op->n_transaction = n_transaction;
+      op->operation = *operation;
+      op->atributo = *atributo;
       op->prox = NULL;
-      addOp(&listOp, op);
+      addOp(&listOp, op); 
     }else{
-      commits[(int) line[2]] = 1;
+      commits[(int) n_transaction] = 1;
       if(isCommited(listOp, commits)){
         escalonamento++;
         /*===============Algoritmo de Teste de seriabilidade quanto ao conflito===============*/
@@ -67,7 +72,7 @@ int main(int argc, char *argv[]){
 
         //Imprime o resultado do escalonamento
         printf("%d ", escalonamento);
-        printf("%c,%c ", trans[0], trans[tam -1]);
+        printf("%d,%d ", trans[0], trans[tam -1]);
         if(temCiclo == 1)
           printf("NS ");
         else
