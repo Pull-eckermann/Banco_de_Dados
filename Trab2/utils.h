@@ -27,10 +27,11 @@ typedef struct operacao{
   struct operacao *prox;
 }operacao;
 
-typedef struct par_rw{
-  struct operacao *tr;
-  struct operacao *tw;
-}par_rw;
+typedef struct par_wr{
+  unsigned int tw; // Timestamp write
+  unsigned int tr; // Timestamp read
+  struct par_wr *prox;
+}par_wr;
 
 /*------------------------------------------------------------*/
 int isCommited(operacao *op, int commits[MAX_T]);

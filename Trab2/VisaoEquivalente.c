@@ -46,7 +46,53 @@ void swap(unsigned int *a, unsigned int *b){
 
 //Testa a equivalência entre duas lista de operações
 int testaEquivalencia(operacao *listOp, operacao *listAux){
+  par_wr *parList = NULL;
+  //Faz toda a parte de criar a lista de pares
+  for(operacao *opr = listOp; opr != NULL; opr = opr->prox){
+    if(opr->operation == 'R'){
+      int lastW = 0;
+      int wExists = 0;
+      for(operacao *opw = listOp; ((opw != NULL) && (opw->timestamp < opr->timestamp)); opw = opw->prox){
+        if((opw->operation == 'W') && (opw->atributo == opr->atributo)){
+          if(opw->n_transaction != opr->n_transaction){
+	    lastW = opw->timestamp;
+	    wExists = 1;
+	  }
+        }
+      }
+      if(wExists){
+        par_wr *par = malloc(sizeof(par_wr));
+	par->tw = lastW;
+	par->tr = opr->timestamp;
+	if(parList != NULL){
+	  par->prox = parList;
+	  parList = par;
+	}
+	else{
+	  parList = par;
+	  par->prox = NULL;
+        }
+      }	
+    } 
+  }
   
+  //Faz a parte de conferir se a lista de pares segue a mesma em listAux
+  //Retorna 0 caso encontre disparidade
+  for(par_wr *par = parList; par != NULL; par = par->prox){
+    for(operacao *opr = listAux; opr != NULL; opr = opr->prox)   
+      if(opr->timestamp == par->tr)
+        for(operacao *opw = opr; opw != NULL; opw = opw->prox)
+          if(opw->timestamp == par->tw)
+            return 0; //Encontrou W(X) depois do R(X) do par, não equivalente
+  }
+  //A partir deste ponto testa a terceira regra
+  return 1;
 }
+
+//Libera a estrutura de pares do algoritmo de visão
+void freePar(par_wr *parList){
+
+}
+
 
 
