@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
       op->operation = *operation;
       op->atributo = *atributo;
       op->prox = NULL;
-      addOp(&listOp, op); 
+      addOp(&listOp, op); //Esse procedimento insere ordenado na lista de op
     }else{
       commits[(int) n_transaction] = 1;
       if(isCommited(listOp, commits)){
@@ -72,11 +72,12 @@ int main(int argc, char *argv[]){
 
         //Imprime o resultado do escalonamento
         printf("%d ", escalonamento);
-        printf("%d,%d ", trans[0], trans[tam -1]);
+        for(int i = 0; i < tam; i++)
+          printf("%d,", trans[i]);
         if(temCiclo == 1)
-          printf("NS ");
+          printf(" NS ");
         else
-          printf("SS ");
+          printf(" SS ");
         if(equivalente == 1)
           printf("SV\n");
         else
@@ -89,17 +90,6 @@ int main(int argc, char *argv[]){
       }
     }
   }
-
-/*  int temCiclo = buscaCicloGrafo(grafo);
   
-  printf("temCiclo = %d\n", temCiclo);
-  for(listaNodoT *x = grafo; x!=NULL; x=x->prox){
-    printf("Transacao: %c\n", x->transaction->n_transacao);
-    printf("Arestas\n");
-    for(listaNodoT *y = x->transaction->arestas; y!=NULL; y=y->prox){
-      printf("%c\n", y->transaction->n_transacao);
-    }
-  }*/
-
   return 0;
 }

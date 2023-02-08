@@ -47,6 +47,7 @@ void swap(unsigned int *a, unsigned int *b){
 //Testa a equivalência entre duas lista de operações
 int testaEquivalencia(operacao *listOp, operacao *listAux){
   par_wr *parList = NULL;
+  //Testa a segunda regra do algoritmo de equivalência
   //Faz toda a parte de criar a lista de pares
   for(operacao *opr = listOp; opr != NULL; opr = opr->prox){
     if(opr->operation == 'R'){
@@ -55,22 +56,21 @@ int testaEquivalencia(operacao *listOp, operacao *listAux){
       for(operacao *opw = listOp; ((opw != NULL) && (opw->timestamp < opr->timestamp)); opw = opw->prox){
         if((opw->operation == 'W') && (opw->atributo == opr->atributo)){
           if(opw->n_transaction != opr->n_transaction){
-	    lastW = opw->timestamp;
-	    wExists = 1;
-	  }
+	          lastW = opw->timestamp;
+	          wExists = 1;
+	        }
         }
       }
       if(wExists){
         par_wr *par = malloc(sizeof(par_wr));
-	par->tw = lastW;
-	par->tr = opr->timestamp;
-	if(parList != NULL){
-	  par->prox = parList;
-	  parList = par;
-	}
-	else{
-	  parList = par;
-	  par->prox = NULL;
+	      par->tw = lastW;
+	      par->tr = opr->timestamp;
+	      if(parList != NULL){
+	        par->prox = parList;
+	        parList = par;
+	      }else{
+	        parList = par;
+	        par->prox = NULL;
         }
       }	
     } 
@@ -82,16 +82,38 @@ int testaEquivalencia(operacao *listOp, operacao *listAux){
     for(operacao *opr = listAux; opr != NULL; opr = opr->prox)   
       if(opr->timestamp == par->tr)
         for(operacao *opw = opr; opw != NULL; opw = opw->prox)
-          if(opw->timestamp == par->tw)
+          if(opw->timestamp == par->tw){
+            freePar(parList);
             return 0; //Encontrou W(X) depois do R(X) do par, não equivalente
+          }
   }
-  //A partir deste ponto testa a terceira regra
+  freePar(parList);
+  //A partir deste ponto testa a terceira regra do algoritmo de equivalência
+  int lastW1;
+  int lastW2;
+  for(operacao *op1 = listOp; op1 != NULL; op1 = op1->prox){
+    char atr = op1->atributo;
+    for(operacao *op2 = listOp; op2 != NULL; op2 = op2->prox)
+      if((op2->atributo == atr) && (op2->operation == 'W'))
+        lastW1 = op2->n_transaction; //Ultima escrita de atr em listOp
+
+    for(operacao *op2 = listAux; op2 != NULL; op2 = op2->prox)
+      if((op2->atributo == atr) && (op2->operation == 'W'))
+        lastW2 = op2->n_transaction; //Ultima escrita de atr em listAux
+
+    if(lastW1 != lastW2) //Se as ultimas escritas forem diferentes
+      return 0; //Não é equivalente
+  }
   return 1;
 }
 
 //Libera a estrutura de pares do algoritmo de visão
 void freePar(par_wr *parList){
-
+  while(parList != NULL){
+    par_wr *aux = parList;
+    parList = parList->prox;
+    free(aux);
+  }
 }
 
 
