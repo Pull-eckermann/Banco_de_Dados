@@ -38,6 +38,7 @@ int isCommited(operacao *op, int commits[MAX_T]);
 void freeOpList(operacao **listOp);
 int tamOp(operacao *listOp);
 void addOp(operacao **listOp, operacao *op);
+void ordenaVetor(unsigned int **trans, int tam);
 
 
 #endif // UTILS_H

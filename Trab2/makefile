@@ -1,5 +1,5 @@
 all: find_conflicts.o Seriabilidade.o VisaoEquivalente.o utils.o
-	gcc -o find_conflicts find_conflicts.o Seriabilidade.o VisaoEquivalente.o utils.o
+	gcc -o escalona find_conflicts.o Seriabilidade.o VisaoEquivalente.o utils.o
 
 find_conflicts.o: find_conflicts.c Seriabilidade.h VisaoEquivalente.h utils.h
 	gcc -o find_conflicts.o find_conflicts.c -c -Wall
@@ -15,4 +15,4 @@ utils.o: utils.c utils.h
 
 clean:
 	rm *.o
-	rm find_conflicts
+	rm escalona

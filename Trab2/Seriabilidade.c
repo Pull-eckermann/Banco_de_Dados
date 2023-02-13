@@ -47,8 +47,8 @@ void criaGrafo(listaNodoT **grafo, operacao *listOp){
   }
 }
 
-//Algoritmo para busca de ciclo em grafo baseado no seguinte endereço:
-//https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/cycles-and-dags.html#sec:on-the-fly
+//Algoritmo para busca de ciclo em grafo baseado no seguinte endereço web:
+//https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/cemycles-and-dags.html#sec:on-the-fly
 static int cnt, pre[MAX_T];
 static int cntt, post[MAX_T];
 

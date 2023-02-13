@@ -4,6 +4,7 @@
 int isCommited(operacao *listOp, int commits[MAX_T]){
   if(listOp != NULL){
     for(operacao *op = listOp; op != NULL; op = op->prox){
+      //Cada indice do vetor commits representa o número da transação
       if(commits[op->n_transaction] == -1) //Se qualquer um deles estiver em -1 quer dizer que não commitou ainda
         return 0;
     }
@@ -48,4 +49,23 @@ void addOp(operacao **listOp, operacao *op){
     aux->prox = op;
   }else
     *listOp = op;
+}
+
+void ordenaVetor(unsigned int **trans, int tam) {
+  int i, j, minIndex;
+  unsigned int temp;
+
+  for (i = 0; i < tam - 1; i++) {
+    minIndex = i;
+    for (j = i + 1; j < tam; j++) {
+      if (trans[0][j] < trans[0][minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex != i) {
+      temp = trans[0][i];
+      trans[0][i] = trans[0][minIndex];
+      trans[0][minIndex] = temp;
+    }
+  }
 }

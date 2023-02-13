@@ -6,9 +6,9 @@
 #include "utils.h"
 
 int main(int argc, char *argv[]){
-  operacao *listOp = NULL;
-  listaNodoT *grafo = NULL;
-  int commits[MAX_T]; //Vetor que confere comitações
+  operacao *listOp = NULL; //Lista de operações do escalonamento
+  listaNodoT *grafo = NULL; //Grafo para o algoritmo do conflito
+  int commits[MAX_T]; //Vetor que confere commits
   for(int i = 0; i < MAX_T; i++) commits[i] = -1; //Iniciliza com -1
   char line[100];
   int escalonamento = 0; //Identificador do escalonamento
@@ -27,8 +27,9 @@ int main(int argc, char *argv[]){
       op->operation = *operation;
       op->atributo = *atributo;
       op->prox = NULL;
-      addOp(&listOp, op); //Esse procedimento insere ordenado na lista de op
+      addOp(&listOp, op); //Esse procedimento insere na lista de op
     }else{
+      // Marca que a transação foi comitada, de acordo com o número dela
       commits[(int) n_transaction] = 1;
       if(isCommited(listOp, commits)){
         escalonamento++;
@@ -40,14 +41,16 @@ int main(int argc, char *argv[]){
         for(operacao *opi = listOp; opi != NULL; opi = opi->prox){
           for(operacao *opj = opi; opj != NULL; opj = opj->prox){
             if(opj->n_transaction != opi->n_transaction){ //Confere se não é a mesma transação
-              if(opi->operation == 'W'){
+              if(opi->operation == 'W'){ //Se for um write
+                //Se for um W ou R e for o mes atributo cria aresta
                 if(((opj->operation == 'W') || (opj->operation == 'R')) && (opi->atributo == opj->atributo)){
                   nodoT *i = buscaNodoGrafo(grafo, opi->n_transaction);
                   nodoT *j = buscaNodoGrafo(grafo, opj->n_transaction);
                   criaAresta(i,j);
                 }
               }
-              if(opi->operation == 'R'){
+              if(opi->operation == 'R'){ //Se for um read
+                //Cria aresta se Tj for um W e de mesmo atributo
                 if((opj->operation == 'W') && (opj->atributo == opi->atributo)){
                   nodoT *i = buscaNodoGrafo(grafo, opi->n_transaction);
                   nodoT *j = buscaNodoGrafo(grafo, opj->n_transaction);
@@ -60,13 +63,15 @@ int main(int argc, char *argv[]){
         //temCiclo será 1 se existir ciclo no grafo
         int temCiclo = buscaCicloGrafo(grafo);
         /*===========================Algoritmo de visão equivalente===========================*/
-        int tam = tamGrafo(grafo);
+        int tam = tamGrafo(grafo); //Número de transações que existem mno escalonamento
         unsigned int *trans = malloc(sizeof(unsigned int) * tam);
         int index = tam - 1;
+        //Trans guarda o número das transações do escalonamento
         for(listaNodoT *g = grafo; g != NULL; g = g->prox){
-          trans[index] = g->transaction->n_transacao;
-          index--;
+          trans[index] = g->transaction->n_transacao; //Cada nodo do grafo representa uma transação
+          index--; 
         }
+        ordenaVetor(&trans, tam);
         //equivalente será 1 se existe visão equivalente em listOp
         int equivalente = visaoEquivalente(trans, tam, listOp);
 

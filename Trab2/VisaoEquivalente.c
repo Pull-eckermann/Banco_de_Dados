@@ -13,7 +13,8 @@ void permute(unsigned int *arr, int l, int r, operacao *listOp, int *result){
     //Cria uma lista de op de acordo com a ordem de transações no vetor
     for(int i = 0; i <= r; i++){
       for(operacao *op = listOp; op != NULL; op = op->prox){
-        if(op->n_transaction == arr[i]){ //Adiciona todas as operaçẽos que forem da transação t
+        //Adiciona todas as operaçẽos que forem da transação de número i
+        if(op->n_transaction == arr[i]){
           operacao *opAux = malloc(sizeof(operacao));
           opAux->timestamp = op->timestamp;
           opAux->n_transaction = op->n_transaction;
@@ -24,13 +25,16 @@ void permute(unsigned int *arr, int l, int r, operacao *listOp, int *result){
         }
       }
     }
-    if(testaEquivalencia(listOp, listAux))
+    //Se for equivalente seta result como 1
+    if(testaEquivalencia(listOp, listAux)) 
       *result = 1;
     freeOpList(&listAux);
   }
-  else if(*result != 1){
+  //Comparação para poupar processamento caso já tenha encontrado visão equivalente
+  else if(*result != 1){ 
     for (int i = l; i <= r; i++){
-      swap(&arr[l], &arr[i]);
+      //Faz a troca para o escalonamento do vetor de transações
+      swap(&arr[l], &arr[i]); 
       permute(arr, l + 1, r, listOp, result);
       swap(&arr[l], &arr[i]);
     }
@@ -50,18 +54,20 @@ int testaEquivalencia(operacao *listOp, operacao *listAux){
   //Testa a segunda regra do algoritmo de equivalência
   //Faz toda a parte de criar a lista de pares
   for(operacao *opr = listOp; opr != NULL; opr = opr->prox){
-    if(opr->operation == 'R'){
+    if(opr->operation == 'R'){ //Se for um read
       int lastW = 0;
       int wExists = 0;
+      //Se baseia no timestamp para criar os pares write read
       for(operacao *opw = listOp; ((opw != NULL) && (opw->timestamp < opr->timestamp)); opw = opw->prox){
+        //Se for um W com o mesmo atributo e esteve antes de R
         if((opw->operation == 'W') && (opw->atributo == opr->atributo)){
-          if(opw->n_transaction != opr->n_transaction){
-	          lastW = opw->timestamp;
-	          wExists = 1;
+          if(opw->n_transaction != opr->n_transaction){ //Se estão em transaçẽos distintas
+	          lastW = opw->timestamp; //Garante que esta escolhendo o último w
+	          wExists = 1; //Dis que existe o par
 	        }
         }
       }
-      if(wExists){
+      if(wExists){ //Cria o par e adiciona na lista de pares se existir
         par_wr *par = malloc(sizeof(par_wr));
 	      par->tw = lastW;
 	      par->tr = opr->timestamp;
